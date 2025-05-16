@@ -49,6 +49,8 @@ def check_product_availability(product):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    url = None
+    max_price = None
     products = load_products()
     if request.method == "POST":
         url = request.form.get("url")
