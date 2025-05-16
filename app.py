@@ -45,6 +45,13 @@ def check_product_availability(product):
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
+            import re
+
+            stock_patterns = re.compile(r"(en stock|disponible|ajouter au panier|in stock|available)", re.IGNORECASE)
+            if stock_patterns.search(response.text):
+                notify_discord(f"Produit disponible : {url}")
+                return True
+
             # Exemple : vérifier si un bouton "Ajouter au panier" est présent et activé
             add_to_cart_button = soup.find("button", text=lambda t: t and "ajouter au panier" in t.lower())
             if add_to_cart_button and not add_to_cart_button.has_attr("disabled"):
@@ -63,13 +70,6 @@ def check_product_availability(product):
     except Exception as e:
         print(f"Erreur lors de la vérification de {url}: {e}")
     return False
-
-import re
-
-stock_patterns = re.compile(r"(en stock|disponible|ajouter au panier|in stock|available)", re.IGNORECASE)
-if stock_patterns.search(response.text):
-    notify_discord(f"Produit disponible : {url}")
-    return True
 
 
 @app.route("/", methods=["GET", "POST"])
