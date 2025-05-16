@@ -35,25 +35,42 @@ def notify_discord(message):
     else:
         print(f"Erreur notification Discord : {response.status_code} - {response.text}")
 
+from bs4 import BeautifulSoup
+
 def check_product_availability(product):
     url = product["url"]
     max_price = product["max_price"]
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            page_content = response.text.lower()
-            # Exemple très simple : on considère que le produit est dispo si "en stock" est présent dans la page
-            if "en stock" in page_content or "disponible" in page_content:
-                # Ici on ne fait pas de parsing prix précis, juste un exemple d'envoi de notif
-                notify_discord(f"Produit disponible à vérifier : {url} (prix max: {max_price}€)")
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            # Exemple : vérifier si un bouton "Ajouter au panier" est présent et activé
+            add_to_cart_button = soup.find("button", text=lambda t: t and "ajouter au panier" in t.lower())
+            if add_to_cart_button and not add_to_cart_button.has_attr("disabled"):
+                notify_discord(f"Produit disponible : {url}")
                 return True
-            else:
-                print(f"Produit pas dispo pour {url}")
+
+            # Ou vérifier la présence d'un élément avec une classe "stock"
+            stock_info = soup.find(class_="stock")
+            if stock_info and "en stock" in stock_info.text.lower():
+                notify_discord(f"Produit disponible : {url}")
+                return True
+
+            print(f"Produit pas dispo pour {url}")
         else:
             print(f"Erreur HTTP {response.status_code} pour {url}")
     except Exception as e:
         print(f"Erreur lors de la vérification de {url}: {e}")
     return False
+
+import re
+
+stock_patterns = re.compile(r"(en stock|disponible|ajouter au panier|in stock|available)", re.IGNORECASE)
+if stock_patterns.search(response.text):
+    notify_discord(f"Produit disponible : {url}")
+    return True
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -96,3 +113,20 @@ def check_all():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+def check_stock_selenium(url):
+    options = Options()
+    options.headless = True
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+    page_source = driver.page_source.lower()
+    driver.quit()
+
+    if "en stock" in page_source or "ajouter au panier" in page_source:
+        notify_discord(f"Produit disponible : {url}")
+        return True
+    return False
+
