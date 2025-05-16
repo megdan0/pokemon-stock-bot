@@ -5,7 +5,7 @@ import json
 import time
 import os
 
-WEBHOOK_URL = os.getenv("WEBHOOK_URL") or "https://discord.com/api/webhooks/..."
+WEBHOOK_URL = os.getenv("WEBHOOK_URL") or "https://discord.com/api/webhooks/1372700039163547679/Na9vuRQenw8Es5RrACzED7HJRjPknKs5FCRV6vVflkCWh7bxByshKbQBejhpdapuVFAK"
 
 DATA_FILE = "data/products.json"
 HEADERS = {
