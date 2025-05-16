@@ -20,8 +20,12 @@ def save_products(products):
         json.dump(products, f, indent=2)
 
 def send_discord_notification(message):
-    # code pour envoyer une notification sur Discord
-    pass
+    data = {"content": message}
+    response = requests.post(DISCORD_WEBHOOK_URL, json=data)
+    if 200 <= response.status_code < 300:
+        print("Notification envoyée sur Discord")
+    else:
+        print(f"Erreur notification Discord : {response.status_code} - {response.text}")
 
 def notify_discord(message):
     data = {"content": message}
