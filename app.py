@@ -85,8 +85,8 @@ def check_all():
     dispo_products = []
     for product in products:
         if check_product_availability(product):
-        print(f"Produit dispo détecté : {product['url']}")
-        dispo_products.append(product["url"])
+            print(f"Produit dispo détecté : {product['url']}")
+            dispo_products.append(product["url"])
 
     if dispo_products:
         return f"Produits dispo: <br>" + "<br>".join(dispo_products)
