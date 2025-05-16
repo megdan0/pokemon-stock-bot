@@ -53,9 +53,13 @@ def index():
     if request.method == "POST":
         url = request.form.get("url")
         max_price = request.form.get("max_price")
-        if url and max_price:
-            products.append({"url": url, "max_price": float(max_price)})
-            save_products(products)
+       if url and max_price:
+    products.append({"url": url, "max_price": float(max_price)})
+    save_products(products)
+
+    # Envoie la notif Discord
+    send_discord_notification(f"Nouveau produit ajouté : {url} avec un prix max de {max_price}€")
+
         return redirect("/")
     return render_template("index.html", products=products)
 
