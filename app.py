@@ -19,6 +19,10 @@ def save_products(products):
     with open(DATA_FILE, "w") as f:
         json.dump(products, f, indent=2)
 
+def send_discord_notification(message):
+    # code pour envoyer une notification sur Discord
+    pass
+
 def notify_discord(message):
     data = {"content": message}
     response = requests.post(DISCORD_WEBHOOK_URL, json=data)
