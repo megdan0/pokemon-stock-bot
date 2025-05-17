@@ -1,13 +1,1 @@
 []
-import json
-
-def save_products(products):
-    with open(PRODUCTS_FILE, "w") as f:
-        json.dump(products, f, indent=4)
-
-def load_products():
-    try:
-        with open(PRODUCTS_FILE, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
