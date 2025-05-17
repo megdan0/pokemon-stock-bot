@@ -9,15 +9,17 @@ DATA_FILE = "data/products.json"
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1372700039163547679/Na9vuRQenw8Es5RrACzED7HJRjPknKs5FCRV6vVflkCWh7bxByshKbQBejhpdapuVFAK"
 
 def load_products():
-    if not os.path.exists(DATA_FILE):
+    try:
+        with open(PRODUCTS_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
         return []
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
+        
 
 def save_products(products):
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
-    with open(DATA_FILE, "w") as f:
-        json.dump(products, f, indent=2)
+    with open(PRODUCTS_FILE, "w") as f:
+        json.dump(products, f, indent=4)
 
 def send_discord_notification(message):
     data = {"content": message}
