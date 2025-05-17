@@ -1,6 +1,18 @@
 from flask import Flask, request, render_template, redirect
 import json
+
 import os
+
+# Chemin absolu vers le dossier courant (là où est app.py)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Crée un sous-dossier 'data' et le fichier products.json dedans
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# Chemin complet vers le fichier JSON
+PRODUCTS_FILE = os.path.join(DATA_DIR, "products.json")
+
 import requests
 
 app = Flask(__name__)
