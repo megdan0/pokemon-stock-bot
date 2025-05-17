@@ -30,7 +30,7 @@ def load_products():
 
 def save_products(products):
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
-    with open(PRODUCTS_FILE, "w") as f:
+    with open('products.json', 'w') as f:
         json.dump(products, f, indent=4)
 
 def send_discord_notification(message):
