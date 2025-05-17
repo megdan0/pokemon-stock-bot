@@ -80,8 +80,17 @@ def index():
     if request.method == "POST":
         url = request.form.get("url")
         max_price = request.form.get("max_price")
+    
     if url and max_price:
-        products.append({"url": url, "max_price": float(max_price)})
+        products.append({
+        "url": url,
+        "max_price": float(max_price),
+        "alerted": False
+    })
+    save_products(products)
+
+    save_products(products)
+
         save_products(products)
         send_discord_notification(f"Nouveau produit ajouté : {url} avec un prix max de {max_price}€")
 
@@ -114,19 +123,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
-def check_stock_selenium(url):
-    options = Options()
-    options.headless = True
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
-    page_source = driver.page_source.lower()
-    driver.quit()
-
-    if "en stock" in page_source or "ajouter au panier" in page_source:
-        notify_discord(f"Produit disponible : {url}")
-        return True
-    return False
 
